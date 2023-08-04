@@ -5,34 +5,12 @@ import cv2
 import numpy as np
 from math import isqrt, ceil
 import torch
-from ifnude import detect
 from scripts.faceswaplab_globals import NSFW_SCORE_THRESHOLD
 from modules import processing
 import base64
 from collections import Counter
 from scripts.faceswaplab_utils.typing import BoxCoords, CV2ImgU8, PILImage
 from scripts.faceswaplab_utils.faceswaplab_logging import logger
-
-
-def check_against_nsfw(img: PILImage) -> bool:
-    """
-    Check if an image exceeds the Not Safe for Work (NSFW) score.
-
-    Parameters:
-    img (PILImage): The image to be checked.
-
-    Returns:
-    bool: True if any part of the image is considered NSFW, False otherwise.
-    """
-
-    shapes: List[bool] = []
-    chunks: List[Dict[str, Union[int, float]]] = detect(img)
-
-    for chunk in chunks:
-        shapes.append(chunk["score"] > NSFW_SCORE_THRESHOLD)
-
-    return any(shapes)
-
 
 def pil_to_cv2(pil_img: PILImage) -> CV2ImgU8:  # type: ignore
     """
