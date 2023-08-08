@@ -195,7 +195,7 @@ class UpscaledINSwapper(INSwapper):
                     logger.info("*" * 80)
                     logger.info(f"Inswapper")
 
-                    if options.upscaler_name:
+                    if options.upscaler_name and options.upscaler_name != "None":
                         # Upscale original image
                         k = 4
                         aimg, M = face_align.norm_crop2(
@@ -210,6 +210,11 @@ class UpscaledINSwapper(INSwapper):
                     )
 
                     if options.improved_mask:
+                        if k == 1:
+                            logger.warning(
+                                "Please note that improved mask does not work well without upscaling. Set upscaling to Lanczos at least if you want speed and want to use improved mask."
+                            )
+
                         logger.info("improved_mask")
                         mask = get_face_mask(aimg, bgr_fake)
                         bgr_fake = merge_images_with_mask(aimg, bgr_fake, mask)
@@ -262,7 +267,6 @@ class UpscaledINSwapper(INSwapper):
                 )
                 img_white[img_white > 20] = 255
                 fthresh = 10
-                print("fthresh", fthresh)
                 fake_diff[fake_diff < fthresh] = 0
                 fake_diff[fake_diff >= fthresh] = 255
                 img_mask = img_white
